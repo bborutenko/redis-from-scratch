@@ -1,12 +1,12 @@
+#include <cassert>
+#include <csignal>
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <stdexcept>
-#include <cstring>
-#include <cassert>
-#include <netinet/in.h>
 #include <unistd.h>
-#include <csignal>
-#include <sys/socket.h>
-#include <sys/types.h>
 
 #include "utils.h"
 
@@ -21,7 +21,7 @@ void signal_handler(int signum) {
   }
 }
 
-int32_t read_full(const int& fd, char *buf, size_t n) {
+std::int32_t read_full(const int& fd, char* buf, std::size_t n) {
   signal(SIGTERM, signal_handler);
 
   while (n > 0) {
@@ -37,14 +37,14 @@ int32_t read_full(const int& fd, char *buf, size_t n) {
       throw std::runtime_error(error);
     }
 
-    assert((size_t)rv <= n);
-    n -= (size_t)rv;
+    assert(static_cast<std::size_t>(rv) <= n);
+    n -= static_cast<std::size_t>(rv);
     buf += rv;
   }
   return 0;
 }
 
-int32_t write_all(const int& fd, const char *buf, size_t n) {
+std::int32_t write_all(const int& fd, const char* buf, std::size_t n) {
   while (n > 0) {
     ssize_t rv = write(fd, buf, n);
 
@@ -53,8 +53,8 @@ int32_t write_all(const int& fd, const char *buf, size_t n) {
       throw std::runtime_error(error);
     }
 
-    assert((size_t)rv <= n);
-    n -= (size_t)rv;
+    assert(static_cast<std::size_t>(rv) <= n);
+    n -= static_cast<std::size_t>(rv);
     buf += rv;
   }
   return 0;

@@ -1,12 +1,24 @@
-#include <vector>
+#pragma once
 
-inline constexpr size_t k_max_msg = 4096; 
+#include <cstddef>   // std::size_t
+#include <cstdint>   // std::uint32_t, std::int32_t
+
+// Maximum allowed message size for framed protocol payloads.
+inline constexpr std::size_t k_max_msg = 4096;
 
 namespace ResponseStatus {
-inline constexpr uint32_t RES_NX = 1;
-inline constexpr uint32_t RES_ERR = -1;
-}
+// Key not found
+inline constexpr std::uint32_t RES_NX = 1;
+// Generic error (kept as uint32_t for wire-compat; value is all-ones)
+inline constexpr std::uint32_t RES_ERR = static_cast<std::uint32_t>(-1);
+}  // namespace ResponseStatus
 
-int32_t read_full(const int& fd, char *buf, size_t n);
-int32_t write_all(const int& fd, const char *buf, size_t n);
-void signal_handler(const int& signum);
+// Read exactly n bytes into buf from fd (or throw on error).
+std::int32_t read_full(const int& fd, char* buf, std::size_t n);
+
+// Write exactly n bytes from buf to fd (or throw on error).
+std::int32_t write_all(const int& fd, const char* buf, std::size_t n);
+
+// Basic signal handler declaration.
+void signal_handler(int signum)
+;

@@ -1,20 +1,27 @@
-CXX = g++
-CXXFLAGS = -Wall -Wextra -O2
-TARGET01 = server
-TARGET02 = client
-SRC01 = src/server.cpp
-SRC02 = src/client.cpp
-UTILS = src/utils/utils.cpp
-ASYNC = src/multithreading/asyncio.cpp
-STRUCTURS = src/datastructures/dtstruct.cpp
+# Simple Makefile for redis-from-scratch
 
-all: $(TARGET01) $(TARGET02)
+CXX := g++
+CXXFLAGS := -std=c++17 -Wall -Wextra -O2
 
-$(TARGET01): $(SRC01)
-	$(CXX) $(CXXFLAGS) $(SRC01) $(UTILS) $(ASYNC) $(STRUCTURES) -o $(TARGET01)
+TARGET_SERVER := server
+TARGET_CLIENT := client
 
-$(TARGET02): $(SRC02)
-	$(CXX) $(CXXFLAGS) $(SRC02) $(UTILS) -o $(TARGET02)
+SRC_DIR := src
+UTILS := $(SRC_DIR)/utils/utils.cpp
+ASYNC := $(SRC_DIR)/multithreading/asyncio.cpp
+
+SERVER_SRC := $(SRC_DIR)/server.cpp
+CLIENT_SRC := $(SRC_DIR)/client.cpp
+
+.PHONY: all clean
+
+all: $(TARGET_SERVER) $(TARGET_CLIENT)
+
+$(TARGET_SERVER): $(SERVER_SRC) $(ASYNC) $(UTILS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(TARGET_CLIENT): $(CLIENT_SRC) $(UTILS)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
 clean:
-	rm -f $(TARGET01) $(TARGET02)
+	rm -f $(TARGET_SERVER) $(TARGET_CLIENT)
